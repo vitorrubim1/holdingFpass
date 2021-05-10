@@ -1,5 +1,14 @@
+import { ChakraProvider } from "@chakra-ui/react";
+
+import Routes from "./routes";
+import { theme } from "./styles/theme";
+
 function App() {
-  return <h1>teste</h1>;
+  return (
+    <ChakraProvider theme={theme}>
+      <Routes />
+    </ChakraProvider>
+  );
 }
 
 export default App;
