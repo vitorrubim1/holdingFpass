@@ -6,6 +6,7 @@ import {
   InputRightElement,
   Divider,
 } from "@chakra-ui/react";
+import { useHistory } from "react-router-dom";
 import { AiOutlineSearch } from "react-icons/ai";
 
 import Content from "../components/Content";
@@ -15,15 +16,18 @@ import Button from "../components/Button";
 
 import MarvelImage from "../assets/images/marvelBackground.jpg";
 import Input from "../components/Input";
+import Card from "../components/Card";
 
 const Search: React.FC = () => {
+  const history = useHistory();
+
   return (
     <Container>
       <ImageBackground imageURL={MarvelImage} />
 
       <Content>
         <Flex justify="center" width="inherit">
-          <Stack spacing={4}>
+          <Stack spacing={5}>
             <Text
               textShadow="1px 1px 1px #3182CE"
               margin="6"
@@ -47,7 +51,13 @@ const Search: React.FC = () => {
 
             <Divider />
 
-            <Button colorScheme="purple">See all</Button>
+            <Button onClick={() => history.push("/list")}>See all</Button>
+
+            <Card
+              imageUrl="https://images.unsplash.com/photo-1505925456693-124134d66749?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+              key={3}
+              name="teste"
+            />
           </Stack>
         </Flex>
       </Content>
