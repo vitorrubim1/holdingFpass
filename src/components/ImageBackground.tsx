@@ -2,9 +2,13 @@ import { Image } from "@chakra-ui/react";
 
 interface ImageBackgroundProps {
   imageURL: string;
+  opacity?: string;
 }
 
-const ImageBackground: React.FC<ImageBackgroundProps> = ({ imageURL }) => {
+const ImageBackground: React.FC<ImageBackgroundProps> = ({
+  imageURL,
+  opacity,
+}) => {
   return (
     <Image
       src={imageURL}
@@ -12,7 +16,7 @@ const ImageBackground: React.FC<ImageBackgroundProps> = ({ imageURL }) => {
       width="inherit"
       objectFit="cover"
       draggable="false"
-      opacity="0.5"
+      opacity={`${opacity ? opacity : "0.5"}`}
     />
   );
 };

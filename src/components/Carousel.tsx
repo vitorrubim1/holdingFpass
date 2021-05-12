@@ -1,14 +1,12 @@
 import { Flex, Text } from "@chakra-ui/react";
 import Carousel from "react-elastic-carousel";
+
+import { ICharacterDTO } from "../dtos/ICharacterDTO";
+
 import Card from "./Card";
 
-interface CharacterDTO {
-  name: string;
-  imageUrl: string;
-}
-
 interface CarouselCharactersProps {
-  items: CharacterDTO[]; // mudar isso
+  items: ICharacterDTO[]; // mudar isso
 }
 
 const CarouselCharacters: React.FC<CarouselCharactersProps> = ({ items }) => {
@@ -22,12 +20,16 @@ const CarouselCharacters: React.FC<CarouselCharactersProps> = ({ items }) => {
   ];
 
   return (
-    <Flex flexDirection="column" width="100%" maxWidth="90vw" marginX="auto">
+    <Flex flexDirection="column" width="100%" marginX="auto">
       <Text>Teste</Text>
 
       <Carousel isRTL={false} breakPoints={breakPoints} pagination={false}>
-        {items.map((item, index) => (
-          <Card name={item.name} key={index} imageUrl={item.imageUrl} />
+        {items.map((item) => (
+          <Card
+            name={item.name}
+            key={item.id}
+            imageUrl={`${item.thumbnail.path}.${item.thumbnail.extension}`}
+          />
         ))}
       </Carousel>
     </Flex>
