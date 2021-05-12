@@ -20,9 +20,9 @@ const Card: React.FC<CardProps> = ({ imageUrl, name, key }) => {
 
   return (
     <Box
-      // maxWidth="360px"
+      maxWidth="360px"
       borderRadius="md"
-      // marginRight={["1", "1"]}
+      marginRight={["1", "3"]}
       key={key}
       _hover={{
         borderLeft: "1px",
@@ -31,7 +31,7 @@ const Card: React.FC<CardProps> = ({ imageUrl, name, key }) => {
       transition="ease-in-out"
       transitionDuration="200ms"
     >
-      <Box boxSize="xs" background="white">
+      <Box maxHeight="210px" background="white">
         <Image src={imageUrl} alt={`${name} character`} />
       </Box>
 
@@ -48,6 +48,8 @@ const Card: React.FC<CardProps> = ({ imageUrl, name, key }) => {
           fontSize={["medium", "larger"]}
           color="gray.800"
           marginBottom="2"
+          overflow="hidden"
+          whiteSpace="nowrap"
         >
           {name}
         </Text>
