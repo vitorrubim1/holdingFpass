@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Flex,
   Text,
@@ -32,19 +32,32 @@ const Search: React.FC = () => {
     useMarvel();
   const history = useHistory();
 
-  const handleSubmit = useCallback((event) => {
-    event.preventDefault();
+  const handleSubmit = useCallback(
+    (event) => {
+      event.preventDefault();
 
-    console.log("got here");
-    console.log(event.target[0].defaultValue.replaceAll("-", "").toLowerCase());
+      console.log("got here");
+      console.log(
+        event.target[0].defaultValue.replaceAll("-", "").toLowerCase()
+      );
 
-    handleSearchCharacterAndComic(wantedCharacter);
-    console.log(searchedCharacter);
+      handleSearchCharacterAndComic(wantedCharacter);
+      console.log(searchedCharacter);
 
-    if (searchedCharacter) {
-      setWasSearched(true);
+      if (searchedCharacter) {
+        setWasSearched(true);
+      } else {
+        setWasSearched(false);
+      }
+    },
+    [handleSearchCharacterAndComic, wantedCharacter, searchedCharacter]
+  );
+
+  useEffect(() => {
+    if (wantedCharacter === "") {
+      setWasSearched(false);
     }
-  }, []);
+  }, [wantedCharacter]);
 
   return (
     <Container>
@@ -85,15 +98,18 @@ const Search: React.FC = () => {
 
             <Button onClick={() => history.push("/list")}>See all</Button>
 
-            {loading && wasSearched && <Loading />}
+            { loading && wasSearched && <Loading />}
 
-            {wasSearched && !error && wantedCharacter && searchedCharacter && (
-              <Card
-                imageUrl={`${searchedCharacter.thumbnail?.path}.${searchedCharacter.thumbnail.extension}`}
-                key={searchedCharacter.id}
-                name={searchedCharacter.title}
-              />
-            )}
+            {!loading &&
+              wasSearched &&
+              wantedCharacter &&
+              searchedCharacter && (
+                <Card
+                  imageUrl={`${searchedCharacter.thumbnail?.path}.${searchedCharacter.thumbnail?.extension}`}
+                  key={searchedCharacter.id}
+                  name={searchedCharacter.title}
+                />
+              )}
 
             {error && (
               <Alert status="error" color="gray.600">

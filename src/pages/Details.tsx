@@ -1,13 +1,10 @@
 import { Box, Flex, Image, Text } from "@chakra-ui/react";
-import { useHistory } from "react-router-dom";
 
 import Content from "../components/Content";
 import Container from "../components/Container";
 import ImageBackground from "../components/ImageBackground";
 
 const Details: React.FC = () => {
-  const history = useHistory();
-
   const CharacterImage =
     "https://images.unsplash.com/photo-1505925456693-124134d66749?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80";
 

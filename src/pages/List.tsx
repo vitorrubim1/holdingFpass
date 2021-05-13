@@ -9,10 +9,16 @@ import Carousel from "../components/Carousel";
 import Content from "../components/Content";
 
 import MarvelImage from "../assets/images/marvelBackground2.jpg";
+import Loading from "../components/Loading";
 
 const List: React.FC = () => {
-  const { handleLoadCharacters, handleLoadComics, characters, comics } =
-    useMarvel();
+  const {
+    handleLoadCharacters,
+    handleLoadComics,
+    characters,
+    comics,
+    loading,
+  } = useMarvel();
 
   useEffect(() => {
     handleLoadCharacters();
@@ -25,7 +31,9 @@ const List: React.FC = () => {
 
       <Content>
         <Flex width="inherit" paddingY="20">
-          {characters && (
+          {loading && <Loading />}
+
+          {characters && !loading && (
             <Carousel characterItems={characters} comicItems={comics} />
           )}
         </Flex>

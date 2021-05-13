@@ -8,7 +8,7 @@ import { IComicsDTO } from "../dtos/IComicsDTO";
 interface MarvelContextData {
   characters: ICharacterDTO[];
   comics: IComicsDTO[];
-  searchedCharacter: IComicsDTO;
+  searchedCharacter: IComicsDTO | undefined;
   error: boolean;
   loading: boolean;
 
@@ -22,7 +22,9 @@ export const MarvelContext = createContext({} as MarvelContextData);
 const MarvelProvider: React.FC = ({ children }) => {
   const [characters, setCharacters] = useState<ICharacterDTO[]>([]);
   const [comics, setComics] = useState<IComicsDTO[]>([]);
-  const [searchedCharacter, setSearchedCharacter] = useState({} as IComicsDTO);
+  const [searchedCharacter, setSearchedCharacter] = useState(
+    {} as IComicsDTO | undefined
+  );
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -32,21 +34,44 @@ const MarvelProvider: React.FC = ({ children }) => {
 
   const hash = md5(time + privateKey + publicKey);
 
-  const handleLoadCharacters = useCallback(async () => {
-    const response = await api.get(
-      `characters?ts=${time}&apikey=${publicKey}&hash=${hash}`
+  const handleStopLoading = useCallback(() => {
+    setTimeout(
+      () => {
+        setLoading(false);
+      },
+      200,
+      []
     );
+  }, []);
 
-    setCharacters(response.data.data.results);
+  const handleLoadCharacters = useCallback(async () => {
+    try {
+      setLoading(true);
+      const response = await api.get(
+        `characters?ts=${time}&apikey=${publicKey}&hash=${hash}`
+      );
+
+      setCharacters(response.data.data.results);
+      handleStopLoading();
+    } catch (error) {
+      setError(true);
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleLoadComics = useCallback(async () => {
-    const response = await api.get(
-      `comics?ts=${time}&apikey=${publicKey}&hash=${hash}`
-    );
+    try {
+      setLoading(true);
+      const response = await api.get(
+        `comics?ts=${time}&apikey=${publicKey}&hash=${hash}`
+      );
 
-    setComics(response.data.data.results);
+      setComics(response.data.data.results);
+      handleStopLoading();
+    } catch (error) {
+      setError(true);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -58,11 +83,18 @@ const MarvelProvider: React.FC = ({ children }) => {
         { params: { titleStartsWith: value } }
       );
 
-      setSearchedCharacter(response.data.data.results[0]);
-      setLoading(false);
+      if (response.data.data.results[0]) {
+        setSearchedCharacter(response.data.data.results[0]);
+        setError(false);
+      } else {
+        setSearchedCharacter(undefined);
+        setError(true);
+      }
+
+      handleStopLoading();
     } catch (error) {
+      handleStopLoading();
       setError(true);
-      setLoading(false);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -1,11 +1,11 @@
-import { Box } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 import { CircleLoader } from "react-spinners";
 
 const Loading: React.FC = () => {
   return (
-    <Box>
-      <CircleLoader size={50} color="#F10707" />
-    </Box>
+    <Flex height="30%" width="inherit" align="center" justify="center">
+      <CircleLoader size={70} color="#FFF" />
+    </Flex>
   );
 };
 
