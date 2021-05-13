@@ -1,3 +1,4 @@
+import { useCallback, useState } from "react";
 import {
   Flex,
   Text,
@@ -5,21 +6,45 @@ import {
   InputGroup,
   InputRightElement,
   Divider,
+  Alert,
+  AlertIcon,
 } from "@chakra-ui/react";
 import { useHistory } from "react-router-dom";
 import { AiOutlineSearch } from "react-icons/ai";
 
+import { useMarvel } from "../hooks/marvel";
+
+import Card from "../components/Card";
+import Input from "../components/Input";
+import Button from "../components/Button";
 import Content from "../components/Content";
 import Container from "../components/Container";
 import ImageBackground from "../components/ImageBackground";
-import Button from "../components/Button";
 
 import MarvelImage from "../assets/images/marvelBackground.jpg";
-import Input from "../components/Input";
-import Card from "../components/Card";
+import Loading from "../components/Loading";
 
 const Search: React.FC = () => {
+  const [wantedCharacter, setWantedCharacter] = useState("");
+  const [wasSearched, setWasSearched] = useState(false);
+
+  const { handleSearchCharacterAndComic, searchedCharacter, error, loading } =
+    useMarvel();
   const history = useHistory();
+
+  const handleSubmit = useCallback((event) => {
+    event.preventDefault();
+
+    console.log("got here");
+    console.log(event.target[0].defaultValue.replaceAll("-", "").toLowerCase());
+
+    handleSearchCharacterAndComic(wantedCharacter);
+    console.log(searchedCharacter);
+
+    if (searchedCharacter) {
+      setWasSearched(true);
+    }
+  }, []);
 
   return (
     <Container>
@@ -37,13 +62,20 @@ const Search: React.FC = () => {
               MySuperHero
             </Text>
 
-            <InputGroup as="form">
+            <InputGroup as="form" onSubmit={handleSubmit}>
               <Input
+                value={wantedCharacter}
+                onChange={(event) =>
+                  setWantedCharacter(
+                    event.target.value.replaceAll("-", "").toLowerCase()
+                  )
+                }
                 name="searchCharacter"
                 placeholder="Search for a character"
+                isRequired
               />
               <InputRightElement width="3rem">
-                <Button>
+                <Button type="submit">
                   <AiOutlineSearch />
                 </Button>
               </InputRightElement>
@@ -53,12 +85,21 @@ const Search: React.FC = () => {
 
             <Button onClick={() => history.push("/list")}>See all</Button>
 
-            {false && (
+            {loading && wasSearched && <Loading />}
+
+            {wasSearched && !error && wantedCharacter && searchedCharacter && (
               <Card
-                imageUrl="https://images.unsplash.com/photo-1505925456693-124134d66749?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
-                key={3}
-                name="teste"
+                imageUrl={`${searchedCharacter.thumbnail?.path}.${searchedCharacter.thumbnail.extension}`}
+                key={searchedCharacter.id}
+                name={searchedCharacter.title}
               />
+            )}
+
+            {error && (
+              <Alert status="error" color="gray.600">
+                <AlertIcon />
+                There was an error processing your request
+              </Alert>
             )}
           </Stack>
         </Flex>
