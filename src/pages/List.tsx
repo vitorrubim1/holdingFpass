@@ -1,9 +1,7 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Flex } from "@chakra-ui/react";
-import md5 from "md5";
-import axios from "axios";
 
-import { ICharacterDTO } from "../dtos/ICharacterDTO";
+import { useMarvel } from "../hooks/marvel";
 
 import ImageBackground from "../components/ImageBackground";
 import Container from "../components/Container";
@@ -13,29 +11,13 @@ import Content from "../components/Content";
 import MarvelImage from "../assets/images/marvelBackground2.jpg";
 
 const List: React.FC = () => {
-  const [characters, setCharacters] = useState<ICharacterDTO[]>([]);
-
-  const baseURL = "https://gateway.marvel.com/v1/public/characters?";
-
-  const publicKey = "64b6c1119210a18f2b4daae410828f16";
-  const privateKey = "e620ec82462ac1a9d9fda4cbade6f9ecdeaa9244";
-  const time = Date.now();
-
-  const hash = md5(time + privateKey + publicKey);
-
-  const handleLoadCharacters = useCallback(async () => {
-    const response = await axios.get(
-      `http://gateway.marvel.com/v1/public/characters?ts=${time}&apikey=${publicKey}&hash=${hash}`
-    );
-
-    setCharacters(response.data.data.results);
-    console.log(response.data.data.results);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const { handleLoadCharacters, handleLoadComics, characters, comics } =
+    useMarvel();
 
   useEffect(() => {
     handleLoadCharacters();
-  }, [handleLoadCharacters]);
+    handleLoadComics();
+  }, [handleLoadCharacters, handleLoadComics]);
 
   return (
     <Container>
@@ -43,7 +25,9 @@ const List: React.FC = () => {
 
       <Content>
         <Flex width="inherit" paddingY="20">
-          <Carousel items={characters} />
+          {characters && (
+            <Carousel characterItems={characters} comicItems={comics} />
+          )}
         </Flex>
       </Content>
     </Container>

@@ -1,15 +1,20 @@
-import { Flex, Text } from "@chakra-ui/react";
+import { Flex, Text, Box } from "@chakra-ui/react";
 import Carousel from "react-elastic-carousel";
 
 import { ICharacterDTO } from "../dtos/ICharacterDTO";
+import { IComicsDTO } from "../dtos/IComicsDTO";
 
 import Card from "./Card";
 
 interface CarouselCharactersProps {
-  items: ICharacterDTO[]; // mudar isso
+  characterItems?: ICharacterDTO[];
+  comicItems?: IComicsDTO[];
 }
 
-const CarouselCharacters: React.FC<CarouselCharactersProps> = ({ items }) => {
+const CarouselCharacters: React.FC<CarouselCharactersProps> = ({
+  characterItems,
+  comicItems,
+}) => {
   const breakPoints = [
     { width: 1, itemsToShow: 1 },
     { width: 550, itemsToShow: 2, itemsToScroll: 2 },
@@ -20,18 +25,60 @@ const CarouselCharacters: React.FC<CarouselCharactersProps> = ({ items }) => {
   ];
 
   return (
-    <Flex flexDirection="column" width="100%" marginX="auto">
-      <Text>Teste</Text>
+    <Flex
+      width="100%"
+      marginX="auto"
+      flexDirection="column"
+      height="90vh"
+      marginTop={["-30", "-50"]}
+    >
+      <Box>
+        <Text
+          marginLeft="10"
+          fontSize="2xl"
+          fontWeight="extrabold"
+          textShadow="1px 1px 1px #3182CE"
+          padding="5"
+        >
+          Characters
+        </Text>
+        {characterItems && (
+          <Carousel isRTL={false} breakPoints={breakPoints} pagination={false}>
+            {characterItems.map((item) => (
+              <Card
+                name={item.name}
+                key={item.id}
+                imageUrl={`${item.thumbnail.path}.${item.thumbnail.extension}`}
+              />
+            ))}
+          </Carousel>
+        )}
+      </Box>
 
-      <Carousel isRTL={false} breakPoints={breakPoints} pagination={false}>
-        {items.map((item) => (
-          <Card
-            name={item.name}
-            key={item.id}
-            imageUrl={`${item.thumbnail.path}.${item.thumbnail.extension}`}
-          />
-        ))}
-      </Carousel>
+      <Box marginTop="5">
+        <Text
+          marginLeft="10"
+          fontSize="2xl"
+          fontWeight="extrabold"
+          textShadow="1px 1px 1px #3182CE"
+          padding="5"
+          isTruncated
+          wordBreak="break-word"
+        >
+          Comics
+        </Text>
+        {comicItems && (
+          <Carousel isRTL={false} breakPoints={breakPoints} pagination={false}>
+            {comicItems.map((item) => (
+              <Card
+                name={item.title}
+                key={item.id}
+                imageUrl={`${item.thumbnail.path}.${item.thumbnail.extension}`}
+              />
+            ))}
+          </Carousel>
+        )}
+      </Box>
     </Flex>
   );
 };

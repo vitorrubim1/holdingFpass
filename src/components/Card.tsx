@@ -20,7 +20,6 @@ const Card: React.FC<CardProps> = ({ imageUrl, name, key }) => {
 
   return (
     <Box
-      maxWidth="360px"
       borderRadius="md"
       marginRight={["1", "3"]}
       key={key}
@@ -51,7 +50,7 @@ const Card: React.FC<CardProps> = ({ imageUrl, name, key }) => {
           overflow="hidden"
           whiteSpace="nowrap"
         >
-          {name}
+          {`${name.substr(0, 20)}`}
         </Text>
 
         <Button onClick={() => history.push("/details")} alignItems="center">
