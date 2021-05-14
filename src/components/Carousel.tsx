@@ -1,5 +1,8 @@
+import { useCallback, useState } from "react";
 import { Flex, Text, Box } from "@chakra-ui/react";
 import Carousel from "react-elastic-carousel";
+
+import { useMarvel } from "../hooks/marvel";
 
 import { ICharacterDTO } from "../dtos/ICharacterDTO";
 import { IComicsDTO } from "../dtos/IComicsDTO";
@@ -15,14 +18,24 @@ const CarouselCharacters: React.FC<CarouselCharactersProps> = ({
   characterItems,
   comicItems,
 }) => {
+  const [offset, setOffset] = useState(15);
+
+  const { handleLoadMoreCharacters } = useMarvel();
+
   const breakPoints = [
     { width: 1, itemsToShow: 1 },
     { width: 550, itemsToShow: 2, itemsToScroll: 2 },
     { width: 850, itemsToShow: 3 },
     { width: 1150, itemsToShow: 4, itemsToScroll: 2 },
-    { width: 1450, itemsToShow: 5 },
-    { width: 1750, itemsToShow: 6 },
+    { width: 1450, itemsToShow: 5, itemsToScroll: 2 },
+    { width: 1750, itemsToShow: 6, itemsToScroll: 4 },
   ];
+
+  const loadMore = useCallback(() => {
+    handleLoadMoreCharacters();
+
+    setOffset(offset + 15);
+  }, [offset, handleLoadMoreCharacters]);
 
   return (
     <Flex
@@ -43,7 +56,16 @@ const CarouselCharacters: React.FC<CarouselCharactersProps> = ({
           Characters
         </Text>
         {characterItems && (
-          <Carousel isRTL={false} breakPoints={breakPoints} pagination={false}>
+          <Carousel
+            isRTL={false}
+            breakPoints={breakPoints}
+            pagination={false}
+            onNextEnd={(currentItem) => {
+              if (currentItem.index >= offset) {
+                loadMore();
+              }
+            }}
+          >
             {characterItems.map((item) => (
               <Card
                 name={item.name}

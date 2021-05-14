@@ -10,5 +10,6 @@ export interface IComicsDTO {
     extension: string;
   };
   title: string;
+  name: string;
   variants: [{ name: string; resourceURI: string }];
 }

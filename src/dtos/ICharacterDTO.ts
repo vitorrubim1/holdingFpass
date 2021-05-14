@@ -6,6 +6,7 @@ export interface ICharacterDTO {
   id: number;
   description: string;
   name: string;
+  title: string;
   thumbnail: {
     path: string;
     extension: string;

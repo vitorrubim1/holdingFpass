@@ -36,13 +36,7 @@ const Search: React.FC = () => {
     (event) => {
       event.preventDefault();
 
-      console.log("got here");
-      console.log(
-        event.target[0].defaultValue.replaceAll("-", "").toLowerCase()
-      );
-
       handleSearchCharacterAndComic(wantedCharacter);
-      console.log(searchedCharacter);
 
       if (searchedCharacter) {
         setWasSearched(true);
@@ -78,11 +72,7 @@ const Search: React.FC = () => {
             <InputGroup as="form" onSubmit={handleSubmit}>
               <Input
                 value={wantedCharacter}
-                onChange={(event) =>
-                  setWantedCharacter(
-                    event.target.value.replaceAll("-", "").toLowerCase()
-                  )
-                }
+                onChange={(event) => setWantedCharacter(event.target.value)}
                 name="searchCharacter"
                 placeholder="Search for a character"
                 isRequired
@@ -98,16 +88,17 @@ const Search: React.FC = () => {
 
             <Button onClick={() => history.push("/list")}>See all</Button>
 
-            { loading && wasSearched && <Loading />}
+            {loading && wasSearched && <Loading />}
 
             {!loading &&
+              !error &&
               wasSearched &&
               wantedCharacter &&
               searchedCharacter && (
                 <Card
                   imageUrl={`${searchedCharacter.thumbnail?.path}.${searchedCharacter.thumbnail?.extension}`}
                   key={searchedCharacter.id}
-                  name={searchedCharacter.title}
+                  name={searchedCharacter.name}
                 />
               )}
 

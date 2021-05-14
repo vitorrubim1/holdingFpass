@@ -1,5 +1,4 @@
 import { useCallback, useState, useContext, createContext } from "react";
-import md5 from "md5";
 
 import { api } from "../services/api";
 import { ICharacterDTO } from "../dtos/ICharacterDTO";
@@ -15,6 +14,7 @@ interface MarvelContextData {
   handleLoadCharacters(): void;
   handleLoadComics(): void;
   handleSearchCharacterAndComic(value: string): void;
+  handleLoadMoreCharacters(): void;
 }
 
 export const MarvelContext = createContext({} as MarvelContextData);
@@ -27,12 +27,6 @@ const MarvelProvider: React.FC = ({ children }) => {
   );
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  const publicKey = "64b6c1119210a18f2b4daae410828f16";
-  const privateKey = "e620ec82462ac1a9d9fda4cbade6f9ecdeaa9244";
-  const time = Date.now();
-
-  const hash = md5(time + privateKey + publicKey);
 
   const handleStopLoading = useCallback(() => {
     setTimeout(
@@ -47,13 +41,12 @@ const MarvelProvider: React.FC = ({ children }) => {
   const handleLoadCharacters = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await api.get(
-        `characters?ts=${time}&apikey=${publicKey}&hash=${hash}`
-      );
+      const response = await api.get("characters");
 
       setCharacters(response.data.data.results);
       handleStopLoading();
     } catch (error) {
+      handleStopLoading();
       setError(true);
     }
 
@@ -63,13 +56,12 @@ const MarvelProvider: React.FC = ({ children }) => {
   const handleLoadComics = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await api.get(
-        `comics?ts=${time}&apikey=${publicKey}&hash=${hash}`
-      );
+      const response = await api.get("comics");
 
       setComics(response.data.data.results);
       handleStopLoading();
     } catch (error) {
+      handleStopLoading();
       setError(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -78,10 +70,9 @@ const MarvelProvider: React.FC = ({ children }) => {
   const handleSearchCharacterAndComic = useCallback(async (value: string) => {
     try {
       setLoading(true);
-      const response = await api.get(
-        `comics?ts=${time}&apikey=${publicKey}&hash=${hash}`,
-        { params: { titleStartsWith: value } }
-      );
+      const response = await api.get("characters", {
+        params: { name: value },
+      });
 
       if (response.data.data.results[0]) {
         setSearchedCharacter(response.data.data.results[0]);
@@ -100,6 +91,23 @@ const MarvelProvider: React.FC = ({ children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const handleLoadMoreCharacters = useCallback(async () => {
+    try {
+      const offset = characters.length;
+
+      const response = await api.get("characters", {
+        params: {
+          offset,
+        },
+      });
+
+      setCharacters([...characters, ...response.data.data.results]);
+    } catch (error) {
+      handleStopLoading();
+      setError(true);
+    }
+  }, [characters, handleStopLoading]);
+
   return (
     <MarvelContext.Provider
       value={{
@@ -112,6 +120,7 @@ const MarvelProvider: React.FC = ({ children }) => {
         handleLoadCharacters,
         handleLoadComics,
         handleSearchCharacterAndComic,
+        handleLoadMoreCharacters,
       }}
     >
       {children}
