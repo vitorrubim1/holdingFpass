@@ -13,8 +13,9 @@ interface MarvelContextData {
 
   handleLoadCharacters(): void;
   handleLoadComics(): void;
-  handleSearchCharacterAndComic(value: string): void;
+  handleSearchCharacter(value: string): void;
   handleLoadMoreCharacters(): void;
+  handleLoadMoreComics(): void;
 }
 
 export const MarvelContext = createContext({} as MarvelContextData);
@@ -67,7 +68,7 @@ const MarvelProvider: React.FC = ({ children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleSearchCharacterAndComic = useCallback(async (value: string) => {
+  const handleSearchCharacter = useCallback(async (value: string) => {
     try {
       setLoading(true);
       const response = await api.get("characters", {
@@ -108,6 +109,23 @@ const MarvelProvider: React.FC = ({ children }) => {
     }
   }, [characters, handleStopLoading]);
 
+  const handleLoadMoreComics = useCallback(async () => {
+    try {
+      const offset = comics.length;
+
+      const response = await api.get("comics", {
+        params: {
+          offset,
+        },
+      });
+
+      setComics([...comics, ...response.data.data.results]);
+    } catch (error) {
+      handleStopLoading();
+      setError(true);
+    }
+  }, [comics, handleStopLoading]);
+
   return (
     <MarvelContext.Provider
       value={{
@@ -119,8 +137,9 @@ const MarvelProvider: React.FC = ({ children }) => {
 
         handleLoadCharacters,
         handleLoadComics,
-        handleSearchCharacterAndComic,
+        handleSearchCharacter,
         handleLoadMoreCharacters,
+        handleLoadMoreComics,
       }}
     >
       {children}

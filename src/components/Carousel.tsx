@@ -18,9 +18,10 @@ const CarouselCharacters: React.FC<CarouselCharactersProps> = ({
   characterItems,
   comicItems,
 }) => {
-  const [offset, setOffset] = useState(15);
+  const [offsetCharacter, setOffsetCharacter] = useState(15);
+  const [offsetComics, setOffsetComics] = useState(15);
 
-  const { handleLoadMoreCharacters } = useMarvel();
+  const { handleLoadMoreCharacters, handleLoadMoreComics } = useMarvel();
 
   const breakPoints = [
     { width: 1, itemsToShow: 1 },
@@ -31,11 +32,17 @@ const CarouselCharacters: React.FC<CarouselCharactersProps> = ({
     { width: 1750, itemsToShow: 6, itemsToScroll: 4 },
   ];
 
-  const loadMore = useCallback(() => {
+  const loadMoreCharacter = useCallback(() => {
     handleLoadMoreCharacters();
 
-    setOffset(offset + 15);
-  }, [offset, handleLoadMoreCharacters]);
+    setOffsetCharacter(offsetCharacter + 15);
+  }, [offsetCharacter, handleLoadMoreCharacters]);
+
+  const loadMoreComics = useCallback(() => {
+    handleLoadMoreComics();
+
+    setOffsetComics(offsetComics + 15);
+  }, [offsetComics, handleLoadMoreComics]);
 
   return (
     <Flex
@@ -61,15 +68,17 @@ const CarouselCharacters: React.FC<CarouselCharactersProps> = ({
             breakPoints={breakPoints}
             pagination={false}
             onNextEnd={(currentItem) => {
-              if (currentItem.index >= offset) {
-                loadMore();
+              if (currentItem.index >= offsetCharacter) {
+                console.log("chamou characters");
+
+                loadMoreCharacter();
               }
             }}
           >
-            {characterItems.map((item) => (
+            {characterItems.map((item, index) => (
               <Card
                 name={item.name}
-                key={item.id}
+                key={index || item.id}
                 imageUrl={`${item.thumbnail.path}.${item.thumbnail.extension}`}
               />
             ))}
@@ -90,11 +99,21 @@ const CarouselCharacters: React.FC<CarouselCharactersProps> = ({
           Comics
         </Text>
         {comicItems && (
-          <Carousel isRTL={false} breakPoints={breakPoints} pagination={false}>
-            {comicItems.map((item) => (
+          <Carousel
+            isRTL={false}
+            breakPoints={breakPoints}
+            pagination={false}
+            onNextEnd={(currentItem) => {
+              if (currentItem.index >= offsetComics) {
+                console.log("chamou comics");
+                loadMoreComics();
+              }
+            }}
+          >
+            {comicItems.map((item, index) => (
               <Card
                 name={item.title}
-                key={item.id}
+                key={index || item.id}
                 imageUrl={`${item.thumbnail.path}.${item.thumbnail.extension}`}
               />
             ))}

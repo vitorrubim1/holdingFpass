@@ -28,7 +28,7 @@ const Search: React.FC = () => {
   const [wantedCharacter, setWantedCharacter] = useState("");
   const [wasSearched, setWasSearched] = useState(false);
 
-  const { handleSearchCharacterAndComic, searchedCharacter, error, loading } =
+  const { handleSearchCharacter, searchedCharacter, error, loading } =
     useMarvel();
   const history = useHistory();
 
@@ -36,7 +36,7 @@ const Search: React.FC = () => {
     (event) => {
       event.preventDefault();
 
-      handleSearchCharacterAndComic(wantedCharacter);
+      handleSearchCharacter(wantedCharacter);
 
       if (searchedCharacter) {
         setWasSearched(true);
@@ -44,7 +44,7 @@ const Search: React.FC = () => {
         setWasSearched(false);
       }
     },
-    [handleSearchCharacterAndComic, wantedCharacter, searchedCharacter]
+    [handleSearchCharacter, wantedCharacter, searchedCharacter]
   );
 
   useEffect(() => {

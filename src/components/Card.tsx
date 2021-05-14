@@ -5,7 +5,7 @@ import { BsPlus } from "react-icons/bs";
 import Button from "./Button";
 
 interface CardProps {
-  key: number;
+  key: number | string;
   imageUrl: string;
   name: string;
 }
