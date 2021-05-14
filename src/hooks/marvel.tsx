@@ -53,40 +53,38 @@ const MarvelProvider: React.FC = ({ children }) => {
       handleStopLoading();
       setError(true);
     }
+  }, [handleStopLoading]);
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const handleSearchCharacter = useCallback(
+    async (value: string) => {
+      try {
+        setLoading(true);
+        const response = await api.get("characters", {
+          params: { name: value },
+        });
 
-  const handleSearchCharacter = useCallback(async (value: string) => {
-    try {
-      setLoading(true);
-      const response = await api.get("characters", {
-        params: { name: value },
-      });
+        if (response.data.data.results[0]) {
+          setSearchedCharacter(response.data.data.results[0]);
+          setError(false);
+        } else {
+          setSearchedCharacter(undefined);
+          setError(true);
+        }
 
-      if (response.data.data.results[0]) {
-        setSearchedCharacter(response.data.data.results[0]);
-        setError(false);
-      } else {
-        setSearchedCharacter(undefined);
+        handleStopLoading();
+      } catch (error) {
+        handleStopLoading();
         setError(true);
       }
-
-      handleStopLoading();
-    } catch (error) {
-      handleStopLoading();
-      setError(true);
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    },
+    [handleStopLoading]
+  );
 
   const handleLoadMore = useCallback(
     async (type: "characters" | "comics") => {
       try {
-        const offset = comics.length;
-
         if (type === "characters") {
+          const offset = characters.length;
           const response = await api.get("characters", {
             params: {
               offset,
@@ -97,6 +95,7 @@ const MarvelProvider: React.FC = ({ children }) => {
         }
 
         if (type === "comics") {
+          const offset = comics.length;
           const response = await api.get("comics", {
             params: {
               offset,
@@ -115,15 +114,19 @@ const MarvelProvider: React.FC = ({ children }) => {
 
   const handleGetCharacterOrComicInfo = useCallback(
     async (id: number, type: string) => {
-      const response = await api.get(`${type}`, {
-        params: {
-          id: { id },
-        },
-      });
+      try {
+        setLoading(true);
 
-      console.log(response.data.data);
+        const response = await api.get(`${type}/${id}`);
+        setSearchedCharacter(response.data.data.results[0]);
+
+        handleStopLoading();
+      } catch (error) {
+        handleStopLoading();
+        setError(true);
+      }
     },
-    []
+    [handleStopLoading]
   );
 
   return (
