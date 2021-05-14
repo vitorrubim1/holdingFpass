@@ -69,16 +69,16 @@ const CarouselCharacters: React.FC<CarouselCharactersProps> = ({
             pagination={false}
             onNextEnd={(currentItem) => {
               if (currentItem.index >= offsetCharacter) {
-                console.log("chamou characters");
-
                 loadMoreCharacter();
               }
             }}
           >
             {characterItems.map((item, index) => (
               <Card
+                type="character"
                 name={item.name}
-                key={index || item.id}
+                key={index | item.id}
+                id={item.id}
                 imageUrl={`${item.thumbnail.path}.${item.thumbnail.extension}`}
               />
             ))}
@@ -105,15 +105,16 @@ const CarouselCharacters: React.FC<CarouselCharactersProps> = ({
             pagination={false}
             onNextEnd={(currentItem) => {
               if (currentItem.index >= offsetComics) {
-                console.log("chamou comics");
                 loadMoreComics();
               }
             }}
           >
             {comicItems.map((item, index) => (
               <Card
+                type="comic"
                 name={item.title}
-                key={index || item.id}
+                key={index | item.id}
+                id={item.id}
                 imageUrl={`${item.thumbnail.path}.${item.thumbnail.extension}`}
               />
             ))}

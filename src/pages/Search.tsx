@@ -74,7 +74,7 @@ const Search: React.FC = () => {
                 value={wantedCharacter}
                 onChange={(event) => setWantedCharacter(event.target.value)}
                 name="searchCharacter"
-                placeholder="Search for a character"
+                placeholder="Look for spider-man for example"
                 isRequired
               />
               <InputRightElement width="3rem">
@@ -96,8 +96,10 @@ const Search: React.FC = () => {
               wantedCharacter &&
               searchedCharacter && (
                 <Card
+                  type="character"
                   imageUrl={`${searchedCharacter.thumbnail?.path}.${searchedCharacter.thumbnail?.extension}`}
                   key={searchedCharacter.id}
+                  id={searchedCharacter.id}
                   name={searchedCharacter.name}
                 />
               )}

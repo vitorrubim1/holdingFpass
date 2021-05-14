@@ -5,12 +5,14 @@ import { BsPlus } from "react-icons/bs";
 import Button from "./Button";
 
 interface CardProps {
+  type: "character" | "comic";
   key: number | string;
+  id: number;
   imageUrl: string;
   name: string;
 }
 
-const Card: React.FC<CardProps> = ({ imageUrl, name, key }) => {
+const Card: React.FC<CardProps> = ({ imageUrl, name, key, type, id }) => {
   const history = useHistory();
 
   const isWideVersion = useBreakpointValue({
@@ -54,7 +56,12 @@ const Card: React.FC<CardProps> = ({ imageUrl, name, key }) => {
           {`${name ? name.substr(0, 20) : "no name :("}`}
         </Text>
 
-        <Button onClick={() => history.push("/details")} alignItems="center">
+        <Button
+          onClick={() => {
+            history.push(`/details/${type}/${id}`);
+          }}
+          alignItems="center"
+        >
           <BsPlus size={20} />
           <Text marginLeft="1">
             {isWideVersion ? "See more information" : "See more"}
