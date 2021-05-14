@@ -1,12 +1,28 @@
+import { useEffect } from "react";
 import { Box, Flex, Image, Text } from "@chakra-ui/react";
+import { useParams } from "react-router-dom";
+
+import { useMarvel } from "../hooks/marvel";
 
 import Content from "../components/Content";
 import Container from "../components/Container";
 import ImageBackground from "../components/ImageBackground";
 
+interface ParamsProps {
+  id: string;
+  type: "comics" | "characters";
+}
+
 const Details: React.FC = () => {
   const CharacterImage =
     "https://images.unsplash.com/photo-1505925456693-124134d66749?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80";
+
+  const { handleGetCharacterOrComicInfo } = useMarvel();
+  const { id, type } = useParams<ParamsProps>();
+
+  useEffect(() => {
+    handleGetCharacterOrComicInfo(Number(id), type);
+  }, [id, type, handleGetCharacterOrComicInfo]);
 
   return (
     <Container>

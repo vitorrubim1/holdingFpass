@@ -18,10 +18,10 @@ const CarouselCharacters: React.FC<CarouselCharactersProps> = ({
   characterItems,
   comicItems,
 }) => {
-  const [offsetCharacter, setOffsetCharacter] = useState(15);
-  const [offsetComics, setOffsetComics] = useState(15);
+  const [offsetCharacter, setOffsetCharacter] = useState(14);
+  const [offsetComics, setOffsetComics] = useState(14);
 
-  const { handleLoadMoreCharacters, handleLoadMoreComics } = useMarvel();
+  const { handleLoadMore } = useMarvel();
 
   const breakPoints = [
     { width: 1, itemsToShow: 1 },
@@ -32,24 +32,27 @@ const CarouselCharacters: React.FC<CarouselCharactersProps> = ({
     { width: 1750, itemsToShow: 6, itemsToScroll: 4 },
   ];
 
-  const loadMoreCharacter = useCallback(() => {
-    handleLoadMoreCharacters();
+  const loadMore = useCallback(
+    (type: "characters" | "comics") => {
+      if (type === "characters") {
+        setOffsetCharacter(offsetCharacter + 15);
+      }
 
-    setOffsetCharacter(offsetCharacter + 15);
-  }, [offsetCharacter, handleLoadMoreCharacters]);
+      if (type === "comics") {
+        setOffsetComics(offsetComics + 15);
+      }
 
-  const loadMoreComics = useCallback(() => {
-    handleLoadMoreComics();
-
-    setOffsetComics(offsetComics + 15);
-  }, [offsetComics, handleLoadMoreComics]);
+      handleLoadMore(type);
+    },
+    [handleLoadMore, offsetCharacter, offsetComics]
+  );
 
   return (
     <Flex
-      width="100%"
+      width="inherit"
       marginX="auto"
       flexDirection="column"
-      height="90vh"
+      height="100vh"
       marginTop={["-30", "-50"]}
     >
       <Box>
@@ -69,15 +72,16 @@ const CarouselCharacters: React.FC<CarouselCharactersProps> = ({
             pagination={false}
             onNextEnd={(currentItem) => {
               if (currentItem.index >= offsetCharacter) {
-                loadMoreCharacter();
+                // loadMoreCharacter();
+                loadMore("characters");
               }
             }}
           >
             {characterItems.map((item, index) => (
               <Card
-                type="character"
+                type="characters"
                 name={item.name}
-                key={index | item.id}
+                key={index}
                 id={item.id}
                 imageUrl={`${item.thumbnail.path}.${item.thumbnail.extension}`}
               />
@@ -86,7 +90,7 @@ const CarouselCharacters: React.FC<CarouselCharactersProps> = ({
         )}
       </Box>
 
-      <Box marginTop="5">
+      <Box>
         <Text
           marginLeft="10"
           fontSize="2xl"
@@ -105,15 +109,16 @@ const CarouselCharacters: React.FC<CarouselCharactersProps> = ({
             pagination={false}
             onNextEnd={(currentItem) => {
               if (currentItem.index >= offsetComics) {
-                loadMoreComics();
+                // loadMoreComics();
+                loadMore("comics");
               }
             }}
           >
             {comicItems.map((item, index) => (
               <Card
-                type="comic"
+                type="comics"
                 name={item.title}
-                key={index | item.id}
+                key={index}
                 id={item.id}
                 imageUrl={`${item.thumbnail.path}.${item.thumbnail.extension}`}
               />

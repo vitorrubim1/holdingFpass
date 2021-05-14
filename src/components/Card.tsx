@@ -5,7 +5,7 @@ import { BsPlus } from "react-icons/bs";
 import Button from "./Button";
 
 interface CardProps {
-  type: "character" | "comic";
+  type: "characters" | "comics";
   key: number | string;
   id: number;
   imageUrl: string;
@@ -22,6 +22,7 @@ const Card: React.FC<CardProps> = ({ imageUrl, name, key, type, id }) => {
 
   return (
     <Box
+      background="red"
       maxWidth="360px"
       borderRadius="md"
       marginRight={["1", "3"]}
@@ -33,14 +34,14 @@ const Card: React.FC<CardProps> = ({ imageUrl, name, key, type, id }) => {
       transition="ease-in-out"
       transitionDuration="200ms"
     >
-      <Box maxHeight="210px" background="white">
+      <Box maxHeight={["200px", "252px"]} background="gray.100">
         <Image src={imageUrl} alt={`${name} character`} />
       </Box>
 
       <Flex
         align="center"
         flexDirection="column"
-        p="4"
+        padding="4"
         background="gray.100"
         opacity="0.9"
       >

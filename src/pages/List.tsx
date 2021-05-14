@@ -12,25 +12,19 @@ import MarvelImage from "../assets/images/marvelBackground2.jpg";
 import Loading from "../components/Loading";
 
 const List: React.FC = () => {
-  const {
-    handleLoadCharacters,
-    handleLoadComics,
-    characters,
-    comics,
-    loading,
-  } = useMarvel();
+  const { handleLoadCharactersAndComics, characters, comics, loading } =
+    useMarvel();
 
   useEffect(() => {
-    handleLoadCharacters();
-    handleLoadComics();
-  }, [handleLoadCharacters, handleLoadComics]);
+    handleLoadCharactersAndComics();
+  }, [handleLoadCharactersAndComics]);
 
   return (
     <Container>
       <ImageBackground imageURL={MarvelImage} />
 
       <Content>
-        <Flex width="inherit" paddingY="20">
+        <Flex width="inherit" padding={["", "10"]}>
           {loading && <Loading />}
 
           {characters && !loading && (

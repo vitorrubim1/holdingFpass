@@ -11,11 +11,10 @@ interface MarvelContextData {
   error: boolean;
   loading: boolean;
 
-  handleLoadCharacters(): void;
-  handleLoadComics(): void;
+  handleLoadCharactersAndComics(): void;
   handleSearchCharacter(value: string): void;
-  handleLoadMoreCharacters(): void;
-  handleLoadMoreComics(): void;
+  handleLoadMore(type: "characters" | "comics"): void;
+  handleGetCharacterOrComicInfo(id: number, type: string): void;
 }
 
 export const MarvelContext = createContext({} as MarvelContextData);
@@ -39,32 +38,22 @@ const MarvelProvider: React.FC = ({ children }) => {
     );
   }, []);
 
-  const handleLoadCharacters = useCallback(async () => {
+  const handleLoadCharactersAndComics = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await api.get("characters");
 
-      setCharacters(response.data.data.results);
+      const responseCharacter = await api.get("characters");
+      setCharacters(responseCharacter.data.data.results);
+
+      const responseComics = await api.get("comics");
+      setComics(responseComics.data.data.results);
+
       handleStopLoading();
     } catch (error) {
       handleStopLoading();
       setError(true);
     }
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const handleLoadComics = useCallback(async () => {
-    try {
-      setLoading(true);
-      const response = await api.get("comics");
-
-      setComics(response.data.data.results);
-      handleStopLoading();
-    } catch (error) {
-      handleStopLoading();
-      setError(true);
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -92,54 +81,64 @@ const MarvelProvider: React.FC = ({ children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleLoadMoreCharacters = useCallback(async () => {
-    try {
-      const offset = characters.length;
+  const handleLoadMore = useCallback(
+    async (type: "characters" | "comics") => {
+      try {
+        const offset = comics.length;
 
-      const response = await api.get("characters", {
+        if (type === "characters") {
+          const response = await api.get("characters", {
+            params: {
+              offset,
+            },
+          });
+
+          setCharacters([...characters, ...response.data.data.results]);
+        }
+
+        if (type === "comics") {
+          const response = await api.get("comics", {
+            params: {
+              offset,
+            },
+          });
+
+          setComics([...comics, ...response.data.data.results]);
+        }
+      } catch (error) {
+        handleStopLoading();
+        setError(true);
+      }
+    },
+    [comics, characters, handleStopLoading]
+  );
+
+  const handleGetCharacterOrComicInfo = useCallback(
+    async (id: number, type: string) => {
+      const response = await api.get(`${type}`, {
         params: {
-          offset,
+          id: { id },
         },
       });
 
-      setCharacters([...characters, ...response.data.data.results]);
-    } catch (error) {
-      handleStopLoading();
-      setError(true);
-    }
-  }, [characters, handleStopLoading]);
-
-  const handleLoadMoreComics = useCallback(async () => {
-    try {
-      const offset = comics.length;
-
-      const response = await api.get("comics", {
-        params: {
-          offset,
-        },
-      });
-
-      setComics([...comics, ...response.data.data.results]);
-    } catch (error) {
-      handleStopLoading();
-      setError(true);
-    }
-  }, [comics, handleStopLoading]);
+      console.log(response.data.data);
+    },
+    []
+  );
 
   return (
     <MarvelContext.Provider
       value={{
-        characters,
-        comics,
         searchedCharacter,
-        error,
+        characters,
         loading,
+        comics,
+        error,
 
-        handleLoadCharacters,
-        handleLoadComics,
+        handleLoadCharactersAndComics,
+        handleGetCharacterOrComicInfo,
         handleSearchCharacter,
-        handleLoadMoreCharacters,
-        handleLoadMoreComics,
+        handleLoadMore,
       }}
     >
       {children}

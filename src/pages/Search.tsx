@@ -96,7 +96,7 @@ const Search: React.FC = () => {
               wantedCharacter &&
               searchedCharacter && (
                 <Card
-                  type="character"
+                  type="characters"
                   imageUrl={`${searchedCharacter.thumbnail?.path}.${searchedCharacter.thumbnail?.extension}`}
                   key={searchedCharacter.id}
                   id={searchedCharacter.id}
