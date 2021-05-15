@@ -1,4 +1,5 @@
-export interface ICharacterDTO {
+export interface ICharacterAndComicDTO {
+  //Character
   comics: {
     available: number;
     collectionURI: string;
@@ -25,4 +26,11 @@ export interface ICharacterDTO {
     items: [{ name: string; resourceURI: string; type: string }];
   };
   urls: [{ type: string; url: string }];
+
+  //Comic
+  characters: {
+    available: number;
+    collectionURI: string;
+    items: [{ name: string; resourceURI: string }];
+  };
 }

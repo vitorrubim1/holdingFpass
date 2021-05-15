@@ -7,6 +7,9 @@ import { useMarvel } from "../hooks/marvel";
 import Content from "../components/Content";
 import Container from "../components/Container";
 import ImageBackground from "../components/ImageBackground";
+import Loading from "../components/Loading";
+import StoryCard from "../components/StoryCard";
+import BoxCard from "../components/StoryCard/BoxCard";
 
 interface ParamsProps {
   id: string;
@@ -16,16 +19,17 @@ interface ParamsProps {
 const Details: React.FC = () => {
   const [image, setImage] = useState("");
 
-  const { handleGetCharacterOrComicInfo, searchedCharacter } = useMarvel();
   const { id, type } = useParams<ParamsProps>();
+  const { handleGetCharacterOrComicInfo, searchedCharacter, loading } =
+    useMarvel();
 
   useEffect(() => {
-    if (searchedCharacter) {
+    if (searchedCharacter && !loading) {
       setImage(
         `${searchedCharacter.thumbnail?.path}.${searchedCharacter.thumbnail?.extension}`
       );
     }
-  }, [searchedCharacter]);
+  }, [searchedCharacter, loading]);
 
   useEffect(() => {
     handleGetCharacterOrComicInfo(Number(id), type);
@@ -33,12 +37,13 @@ const Details: React.FC = () => {
 
   return (
     <Container>
-      <ImageBackground imageURL={image} opacity="0.2" />
+      <ImageBackground imageURL={image} opacity="0.1" />
 
       <Content>
-        {searchedCharacter && (
+        {loading && <Loading />}
+
+        {searchedCharacter && !loading && (
           <Flex
-            align="center"
             flexDirection="column"
             maxWidth="1000px"
             width="inherit"
@@ -46,9 +51,10 @@ const Details: React.FC = () => {
           >
             <Flex
               boxSize={["xs", "sm"]}
+              marginX="auto"
+              align="center"
               textAlign="center"
               maxHeight="310px"
-              alignItems="center"
               flexDirection="column"
             >
               <Image
@@ -63,11 +69,19 @@ const Details: React.FC = () => {
               </Text>
             </Flex>
 
-            <Flex padding={["10", "16"]} marginTop="10">
+            <Flex marginTop={["20", "10"]} paddingY="16">
               {searchedCharacter?.description
                 ? searchedCharacter?.description
                 : "has no description"}
             </Flex>
+
+            {searchedCharacter.stories && (
+              <StoryCard sectionLabel="Stories">
+                {searchedCharacter.stories.items.map((story) => (
+                  <BoxCard label={story.name} />
+                ))}
+              </StoryCard>
+            )}
           </Flex>
         )}
       </Content>

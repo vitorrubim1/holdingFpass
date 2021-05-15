@@ -4,14 +4,13 @@ import Carousel from "react-elastic-carousel";
 
 import { useMarvel } from "../hooks/marvel";
 
-import { ICharacterDTO } from "../dtos/ICharacterDTO";
-import { IComicsDTO } from "../dtos/IComicsDTO";
+import { ICharacterAndComicDTO } from "../dtos/ICharacterAndComicDTO";
 
 import Card from "./Card";
 
 interface CarouselCharactersProps {
-  characterItems?: ICharacterDTO[];
-  comicItems?: IComicsDTO[];
+  characterItems?: ICharacterAndComicDTO[];
+  comicItems?: ICharacterAndComicDTO[];
 }
 
 const CarouselCharacters: React.FC<CarouselCharactersProps> = ({
@@ -72,7 +71,6 @@ const CarouselCharacters: React.FC<CarouselCharactersProps> = ({
             pagination={false}
             onNextEnd={(currentItem) => {
               if (currentItem.index >= offsetCharacter) {
-                // loadMoreCharacter();
                 loadMore("characters");
               }
             }}
@@ -109,7 +107,6 @@ const CarouselCharacters: React.FC<CarouselCharactersProps> = ({
             pagination={false}
             onNextEnd={(currentItem) => {
               if (currentItem.index >= offsetComics) {
-                // loadMoreComics();
                 loadMore("comics");
               }
             }}

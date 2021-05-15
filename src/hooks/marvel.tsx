@@ -1,13 +1,12 @@
 import { useCallback, useState, useContext, createContext } from "react";
 
 import { api } from "../services/api";
-import { ICharacterDTO } from "../dtos/ICharacterDTO";
-import { IComicsDTO } from "../dtos/IComicsDTO";
+import { ICharacterAndComicDTO } from "../dtos/ICharacterAndComicDTO";
 
 interface MarvelContextData {
-  characters: ICharacterDTO[];
-  comics: IComicsDTO[];
-  searchedCharacter: IComicsDTO | undefined;
+  characters: ICharacterAndComicDTO[];
+  comics: ICharacterAndComicDTO[];
+  searchedCharacter: ICharacterAndComicDTO | null;
   error: boolean;
   loading: boolean;
 
@@ -20,10 +19,10 @@ interface MarvelContextData {
 export const MarvelContext = createContext({} as MarvelContextData);
 
 const MarvelProvider: React.FC = ({ children }) => {
-  const [characters, setCharacters] = useState<ICharacterDTO[]>([]);
-  const [comics, setComics] = useState<IComicsDTO[]>([]);
+  const [characters, setCharacters] = useState<ICharacterAndComicDTO[]>([]);
+  const [comics, setComics] = useState<ICharacterAndComicDTO[]>([]);
   const [searchedCharacter, setSearchedCharacter] = useState(
-    {} as IComicsDTO | undefined
+    {} as ICharacterAndComicDTO | null
   );
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -41,7 +40,9 @@ const MarvelProvider: React.FC = ({ children }) => {
   const handleLoadCharactersAndComics = useCallback(async () => {
     try {
       setLoading(true);
+      setSearchedCharacter(null);
 
+      setLoading(true);
       const responseCharacter = await api.get("characters");
       setCharacters(responseCharacter.data.data.results);
 
@@ -67,7 +68,7 @@ const MarvelProvider: React.FC = ({ children }) => {
           setSearchedCharacter(response.data.data.results[0]);
           setError(false);
         } else {
-          setSearchedCharacter(undefined);
+          setSearchedCharacter(null);
           setError(true);
         }
 
@@ -116,9 +117,11 @@ const MarvelProvider: React.FC = ({ children }) => {
     async (id: number, type: string) => {
       try {
         setLoading(true);
+        setSearchedCharacter(null);
 
         const response = await api.get(`${type}/${id}`);
         setSearchedCharacter(response.data.data.results[0]);
+        console.log(response.data.data.results[0]);
 
         handleStopLoading();
       } catch (error) {
