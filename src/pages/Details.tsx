@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
-import { Flex, Image, Text } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
+import { Flex, Image, Text } from "@chakra-ui/react";
 
 import { useMarvel } from "../hooks/marvel";
 
+import GoBack from "../components/GoBack";
 import Content from "../components/Content";
-import Container from "../components/Container";
-import ImageBackground from "../components/ImageBackground";
 import Loading from "../components/Loading";
+import Container from "../components/Container";
 import StoryCard from "../components/StoryCard";
 import BoxCard from "../components/StoryCard/BoxCard";
-import GoBack from "../components/GoBack";
+import ImageBackground from "../components/ImageBackground";
 
 interface ParamsProps {
   id: string;
