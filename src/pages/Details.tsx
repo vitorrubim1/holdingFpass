@@ -10,6 +10,7 @@ import ImageBackground from "../components/ImageBackground";
 import Loading from "../components/Loading";
 import StoryCard from "../components/StoryCard";
 import BoxCard from "../components/StoryCard/BoxCard";
+import GoBack from "../components/GoBack";
 
 interface ParamsProps {
   id: string;
@@ -48,7 +49,10 @@ const Details: React.FC = () => {
             maxWidth="1000px"
             width="inherit"
             marginX="auto"
+            position="relative"
           >
+            <GoBack to="/" />
+
             <Flex
               boxSize={["xs", "sm"]}
               marginX="auto"

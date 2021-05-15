@@ -10,6 +10,7 @@ import Content from "../components/Content";
 
 import MarvelImage from "../assets/images/marvelBackground2.jpg";
 import Loading from "../components/Loading";
+import GoBack from "../components/GoBack";
 
 const List: React.FC = () => {
   const { handleLoadCharactersAndComics, characters, comics, loading } =
@@ -24,7 +25,13 @@ const List: React.FC = () => {
       <ImageBackground imageURL={MarvelImage} />
 
       <Content>
-        <Flex width="inherit" padding={["", "10"]}>
+        <Flex
+          position="relative"
+          width="inherit"
+          padding={["7", "16"]}
+          flexDirection="column"
+        >
+          <GoBack to="/" />
           {loading && <Loading />}
 
           {characters && !loading && (
